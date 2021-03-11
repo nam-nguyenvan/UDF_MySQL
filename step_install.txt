@@ -1,0 +1,33 @@
+In MySQL
+
+1.check OS and version
+	select @@version_compile_os, @@version_compile_machine;
+	select @@plugin_dir;
+
+
+2.Download lib_mysqludf_sys copy paste to plugin directory
+	https://github.com/rapid7/metasploit-framework/tree/master/data/exploits/mysql
+
+3.Create function 
+	a.Windows
+		x86
+			CREATE FUNCTION sys_exec RETURNS int SONAME 'lib_mysqludf_sys_32.dll';
+			CREATE FUNCTION sys_eval RETURNS string SONAME 'lib_mysqludf_sys_32.dll';
+
+		x64
+			CREATE FUNCTION sys_exec RETURNS int SONAME 'lib_mysqludf_sys_64.dll';
+			CREATE FUNCTION sys_eval RETURNS string SONAME 'lib_mysqludf_sys_64.dll';
+	b.Linux
+			CREATE FUNCTION sys_exec RETURNS int SONAME 'lib_mysqludf_sys_32.so';
+			CREATE FUNCTION sys_eval RETURNS string SONAME 'lib_mysqludf_sys_32.so';
+
+			CREATE FUNCTION sys_exec RETURNS int SONAME 'lib_mysqludf_sys_64.so';
+			CREATE FUNCTION sys_eval RETURNS string SONAME 'lib_mysqludf_sys_64.so';
+
+
+4.Test function
+	DECLARE cmd CHAR(255);
+	DECLARE result int(10);
+	SET cmd = "../<ProjectApp>/bin/Debug/netcoreapp3.1/<appName>.exe";
+	SET result = sys_exec(cmd);
+
